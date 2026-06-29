@@ -1,6 +1,6 @@
 # Variant Media Filter V2 — Installation Guide
 
-This guide explains how to deploy the Variant Media Filter app. This app is designed as a **Custom App** (Single Merchant), meaning you deploy it directly to a single Shopify store without going through the Shopify App Store review process.
+This guide explains how to deploy the Variant Media Filter app. This app is designed as a **Custom App**, meaning you deploy it directly to a single Shopify store via a custom installation link.
 
 ## Prerequisites
 Before you start, make sure you have:
@@ -83,38 +83,21 @@ shopify app deploy
 
 ---
 
-## Step 5: Install on the Store
-1. Go to your Vercel URL (`https://your-vercel-url.vercel.app`).
-2. You will see a login prompt. Enter the `.myshopify.com` domain of the store you want to install it on.
-3. Click **Log in** and follow the prompts to install the app on the store.
+## Step 5: Generate the Install Link & Install
+Since this is a custom app, you will install it by generating a custom installation link.
+
+1. Go back to your [Shopify Partners Dashboard](https://partners.shopify.com/) and click on your app.
+2. Click **Distribution** in the left sidebar.
+3. Click **Custom Distribution**.
+4. Enter the **.myshopify.com url** of the store you want to install it on.
+5. Click **Generate link**.
+6. Copy the installation link, open it in a new tab, and follow the prompts to install the app on the store.
 
 ### Enable the App on the Storefront
-After installation:
+After installation is complete:
 1. Go to your Shopify Store Admin > **Online Store** > **Themes** > **Customize**.
 2. Click the **App Embeds** icon (on the far left).
 3. Toggle **Variant Media Filter** to ON.
 4. Click **Save**.
 
 The app is now fully functional! Open it from the Shopify Admin to start mapping images to variants.
-
----
----
-
-## Advanced: Deploying to Multiple Stores (Zero App Store Fees)
-Custom apps are technically restricted to a single store by Shopify. However, because this codebase dynamically pulls the API key from Vercel's environment variables, you can use **this exact same codebase and database** to host unlimited clients without paying the $19 App Store fee.
-
-To add a second client:
-1. Create a **new Custom App** in your Shopify Partners dashboard (giving you a new Client ID and Secret).
-2. Create a **new Vercel project** from this same GitHub repository.
-3. Add the 4 environment variables, using the **new** Client ID and Secret, but use the **exact same** Neon database strings (the database automatically isolates data by store domain).
-4. Deploy the Vercel project to get a new URL.
-5. In your local terminal, create a new config file linked to the new app:
-   ```bash
-   shopify app config link
-   ```
-6. Update the new `shopify.app.[client].toml` file with the new Vercel URL.
-7. Push the theme extension specifically to the new app:
-   ```bash
-   shopify app deploy --config [client]
-   ```
-8. Install the app on the new store via the new Vercel URL!
