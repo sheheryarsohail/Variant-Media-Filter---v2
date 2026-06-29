@@ -10,7 +10,7 @@
 {%- comment -%} Variant -> mediaIds map {%- endcomment -%}
 <script id="vmf-map" type="application/json">
 {%- if product and product.metafields.custom.variant_media_map != blank -%}
-{{ product.metafields.custom.variant_media_map.value }}
+{{ product.metafields.custom.variant_media_map.value | json }}
 {%- else -%}
 {}
 {%- endif -%}

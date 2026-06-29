@@ -214,6 +214,79 @@
     } catch (e) {}
   }
 
+  // ─── 10.5. SLIDESHOW COMPONENT THEME (Newer Horizon/Dawn variants) ───────
+  function slideshowComponentGetNumericId(el) {
+    var pm = el.querySelector(".product-media[data-media-id]");
+    if (pm) return extractNumericTail(pm.getAttribute("data-media-id"));
+    var btn = el.querySelector("button[data-media-id]");
+    if (btn) return extractNumericTail(btn.getAttribute("data-media-id"));
+    return extractNumericTail(el.getAttribute("data-media-id") || el.getAttribute("id"));
+  }
+
+  function slideshowComponentApply(allowedIdSet, allowedUrlSet) {
+    var mg = document.querySelector("media-gallery");
+    if (!mg) return false;
+    var sComp = mg.querySelector("slideshow-component");
+    if (!sComp) return false;
+
+    var slides = Array.from(sComp.querySelectorAll("slideshow-slide"));
+    if (!slides.length) return false;
+
+    suppress(800);
+
+    slides.forEach(function (slide, idx) {
+      var mid = slideshowComponentGetNumericId(slide);
+      var match = false;
+      if (mid && allowedIdSet.has(mid)) match = true;
+      if (!match) {
+        var imgs = Array.from(slide.querySelectorAll("img"));
+        for (var i = 0; i < imgs.length; i++) {
+          if (getImgUrls(imgs[i]).some(function(u) { return allowedUrlSet.has(u); })) {
+            match = true; break;
+          }
+        }
+      }
+      setHidden(slide, !match);
+      var dot = sComp.querySelector('.slideshow-controls__dots li:nth-child(' + (idx + 1) + ')');
+      if (dot) setHidden(dot, !match);
+    });
+
+    var gridItems = Array.from(mg.querySelectorAll(".media-gallery__grid > li"));
+    gridItems.forEach(function (li) {
+      var mid = slideshowComponentGetNumericId(li);
+      var match = false;
+      if (mid && allowedIdSet.has(mid)) match = true;
+      if (!match) {
+        var imgs = Array.from(li.querySelectorAll("img"));
+        for (var i = 0; i < imgs.length; i++) {
+          if (getImgUrls(imgs[i]).some(function(u) { return allowedUrlSet.has(u); })) {
+            match = true; break;
+          }
+        }
+      }
+      setHidden(li, !match);
+    });
+
+    window.dispatchEvent(new Event("resize"));
+    setTimeout(function () { window.dispatchEvent(new Event("resize")); }, 200);
+    return true;
+  }
+
+  function slideshowComponentShowAll() {
+    var mg = document.querySelector("media-gallery");
+    if (!mg) return false;
+    var sComp = mg.querySelector("slideshow-component");
+    if (!sComp) return false;
+
+    suppress(500);
+    sComp.querySelectorAll("slideshow-slide").forEach(function (li) { setHidden(li, false); });
+    sComp.querySelectorAll(".slideshow-controls__dots li").forEach(function (li) { setHidden(li, false); });
+    mg.querySelectorAll(".media-gallery__grid > li").forEach(function (li) { setHidden(li, false); });
+    
+    window.dispatchEvent(new Event("resize"));
+    return true;
+  }
+
   // ─── 10. DAWN THEME ───────────────────────────────────────────────────────
   // Dawn uses <media-gallery> custom element.
   // Slides are `li.product__media-item` with id="Slide-gallery-{sectionId}-{mediaId}".
@@ -473,6 +546,7 @@
 
   // ─── 14. SHOW ALL ─────────────────────────────────────────────────────────
   function showAll() {
+    if (slideshowComponentShowAll()) return;
     if (horizonShowAll()) return;
     if (dawnShowAll())   return;
     if (coranoShowAll()) return;
@@ -506,7 +580,10 @@
     });
     var allowedUrlSet = new Set(allowedUrls);
 
-    // Priority: Horizon → Dawn → Corano → Universal
+    // Priority: SlideshowComponent → Horizon → Dawn → Corano → Universal
+    if (document.querySelector("slideshow-component")) {
+      if (slideshowComponentApply(allowedIdSet, allowedUrlSet)) return;
+    }
     if (document.querySelector("horizon-media")) {
       horizonApply(allowedIdSet, allowedUrlSet);
       return;

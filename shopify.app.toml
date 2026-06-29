@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "a4167c43748af0641af979f9b2bac734"
+client_id = "3c27fe0ec1f8a934d0b2abb777b2d37a"
 name = "Variant Media Filter"
 application_url = "https://variant-media-filter-v2.vercel.app"
 embedded = true
