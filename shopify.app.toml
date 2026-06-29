@@ -1,0 +1,30 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "a4167c43748af0641af979f9b2bac734"
+name = "Variant Media Filter"
+application_url = "https://variant-media-filter-v2.vercel.app"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2026-01"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
+
+[access_scopes]
+scopes = "read_products,write_products"
+optional_scopes = [ ]
+
+[auth]
+redirect_urls = [
+  "https://variant-media-filter-v2.vercel.app/auth/callback",
+  "https://variant-media-filter-v2.vercel.app/auth/shopify/callback"
+]

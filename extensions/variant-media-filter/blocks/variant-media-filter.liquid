@@ -1,0 +1,55 @@
+{% comment %}
+  Variant Media Filter - APP EMBED
+{% endcomment %}
+
+<div id="vmf-root"
+  data-vmf-product-id="{{ product.id }}"
+  data-vmf-product-handle="{{ product.handle }}">
+</div>
+
+{%- comment -%} Variant -> mediaIds map {%- endcomment -%}
+<script id="vmf-map" type="application/json">
+{%- if product and product.metafields.custom.variant_media_map != blank -%}
+{{ product.metafields.custom.variant_media_map.value }}
+{%- else -%}
+{}
+{%- endif -%}
+</script>
+
+{%- comment -%} mediaId -> imageUrl list {%- endcomment -%}
+{%- if product -%}
+{%- assign vmf_media_parts = "" -%}
+{%- for m in product.media -%}
+  {%- if m.media_type == 'image' -%}
+    {%- capture vmf_part -%}{"id": {{ m.id | json }}, "url": {{ m.preview_image | image_url: width: 1600 | json }}}{%- endcapture -%}
+    {%- if vmf_media_parts != "" -%}{%- assign vmf_media_parts = vmf_media_parts | append: "," -%}{%- endif -%}
+    {%- assign vmf_media_parts = vmf_media_parts | append: vmf_part -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<script id="vmf-media" type="application/json">
+[{{ vmf_media_parts }}]
+</script>
+
+<script id="vmf-initial-variant" type="application/json">
+{{ product.selected_or_first_available_variant.id | json }}
+</script>
+
+<script id="vmf-variants" type="application/json">
+[
+{%- for v in product.variants -%}
+  {"id": {{ v.id | json }}, "options": {{ v.options | json }} }{%- unless forloop.last -%},{%- endunless -%}
+{%- endfor -%}
+]
+</script>
+
+<script defer src="{{ 'variant-media-filter.js' | asset_url }}"></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Variant Media Filter",
+  "target": "head",
+  "settings": []
+}
+{% endschema %}

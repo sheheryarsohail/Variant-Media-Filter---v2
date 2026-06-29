@@ -1,0 +1,23 @@
+node_modules/
+build/
+.cache/
+.env
+.env.*
+!.env.example
+.react-router/
+
+# Prisma
+prisma/migrations/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Shopify CLI
+.shopify/
