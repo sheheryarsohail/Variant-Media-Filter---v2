@@ -15,7 +15,7 @@ Before you start, make sure you have:
 1. Go to your [Shopify Partners Dashboard](https://partners.shopify.com/).
 2. Navigate to **Apps** > **Create App** > **Create App Manually**.
 3. Name your app (e.g., "Variant Media Filter").
-4. Once created, click on **API Access** in the left sidebar.
+4. Once created, click on **Settings** in the left sidebar.
 5. Note your **Client ID** and **Client Secret**.
 
 ---
